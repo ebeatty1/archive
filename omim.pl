@@ -1,9 +1,6 @@
 #!/usr/bin/perl
 use strict; use warnings;
 use Getopt::Long qw(GetOptions);
-use File::Basename;
-use lib dirname (__FILE__);
-use omim;
 
 my $version = '1.0';
 my $name = 'omim.pl';
@@ -80,7 +77,6 @@ foreach my $omimNumber (@omimList)
 
     my $counter = 0;
     print $omimNumber."\t";
-    # my $combinedPhenotypes = '';
     foreach my $phenotype (@phenotypes)
     {
         if ($counter > 0 && $counter < scalar(@phenotypes))
