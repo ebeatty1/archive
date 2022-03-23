@@ -10,30 +10,30 @@ sub new
     die "Encountered entry that doesn't match expected Pseudogene.org format.\n" unless (scalar(@entry) == 23 || scalar(@entry) == 24);
 
     my $self = bless {  
-        pseudogene_id => $entry[0],                         # 0
-        chromosome => $entry[1],                            # 1
-        unknown_2 => $entry[2],                             # 2     # 7- to 9-digit number
-        unknown_3 => $entry[3],                             # 3     # 7- to 9-digit number
-        unknown_4 => $entry[4],                             # 4     # either + or -; likely indel
-        ensembl_prot_id => $entry[5],                       # 5
-        unknown_6 => $entry[6],                             # 6     # 1- to 4-digit number
-        unknown_7 => $entry[7],                             # 7     # 2- to 4-digit number
-        ensembl_gene_id => $entry[8],                       # 8
-        unknown_9 => $entry[9],                             # 9     # value between 0 and 1; likely homology or a p-value
-        unknown_10 => $entry[10],                           # 10    # 1- to 2-digit number
-        unknown_11 => $entry[11],                           # 11    # 1- to 2-digit number
-        unknown_12 => $entry[12],                           # 12    # 1- to 2-digit number
-        unknown_13 => $entry[13],                           # 13    # 1- to 2-digit number
-        unknown_14 => $entry[14],                           # 14    # number in scientific notation; always below 0
-        unknown_15 => $entry[15],                           # 15    # value between 0 and 1; likely homology or a p-value
-        unknown_16 => $entry[16],                           # 16    # value between 0 and 3; likely a type or group of some sort
-        unknown_17 => $entry[17],                           # 17    # Yes or No
-        unknown_18 => $entry[18],                           # 18    # a combination of unknown_2 and unknown_3, in double brackets; sometimes has more values
-        unknown_19 => $entry[19],                           # 19    # empty brackets in most cases
-        status => $entry[20],                               # 20
+        pseudogene_id => $entry[0],                         # 0     # Yale pseudogene ID
+        chromosome => $entry[1],                            # 1     
+        tstart => $entry[2],                                # 2     # transcription start position
+        tend => $entry[3],                                  # 3     # transcription end position
+        strand => $entry[4],                                # 4     
+        parent_ensembl_prot_id => $entry[5],                # 5     # parent ENSP
+        parent_tstart => $entry[6],                         # 6
+        parent_tend => $entry[7],                           # 7
+        parent_ensembl_gene_id => $entry[8],                # 8     # Parent ENSG
+        overlap => $entry[9],                               # 9
+        insertions => $entry[10],                           # 10
+        deletions => $entry[11],                            # 11
+        shifts => $entry[12],                               # 12
+        stop_codons => $entry[13],                          # 13
+        pvalue => $entry[14],                               # 14
+        identity => $entry[15],                             # 15
+        polyA => $entry[16],                                # 16
+        obs_1 => $entry[17],                                # 17    # unused; ignore
+        exons => $entry[18],                                # 18
+        introns => $entry[19],                              # 19
+        biotype => $entry[20],                              # 20
         sequence => $entry[21],                             # 21
-        unknown_22 => $entry[22],                           # 22    # combination of ensembl_prot_id and some other values; formatted
-        new_addition => $entry[23]                          # 23    # optional
+        database_identifier => $entry[22],                  # 22
+        obs_2 => $entry[23]                                 # 23    # unused; ignore
     }, $class;
 
     return $self;
@@ -53,137 +53,137 @@ sub get_chromosome
     return $self->{chromosome};
 }
 
-sub get_unknown_2
+sub get_tstart
 {
     # 2
     my $self = shift;
-    return $self->{unknown_2};
+    return $self->{tstart};
 }
 
-sub get_unknown_3
+sub get_tend
 {
     # 3
     my $self = shift;
-    return $self->{unknown_3};
+    return $self->{tend};
 }
 
-sub get_unknown_4
+sub get_strand
 {
     # 4
     my $self = shift;
-    return $self->{unknown_4};
+    return $self->{strand};
 }
 
-sub get_ensembl_prot_id
+sub get_parent_ensembl_prot_id
 {
     # 5
     my $self = shift;
-    return $self->{ensembl_prot_id};
+    return $self->{parent_ensembl_prot_id};
 }
 
-sub get_unknown_6
+sub get_parent_tstart
 {
     # 6
     my $self = shift;
-    return $self->{unknown_6};
+    return $self->{parent_tstart};
 }
 
-sub get_unknown_7
+sub get_parent_tend
 {
     # 7
     my $self = shift;
-    return $self->{unknown_7};
+    return $self->{parent_tend};
 }
 
-sub get_ensembl_gene_id
+sub get_parent_ensembl_gene_id
 {
     # 8
     my $self = shift;
-    return $self->{ensembl_gene_id};
+    return $self->{parent_ensembl_gene_id};
 }
 
-sub get_unknown_9
+sub get_overlap
 {
     # 9
     my $self = shift;
-    return $self->{unknown_9};
+    return $self->{overlap};
 }
 
-sub get_unknown_10
+sub get_insertions
 {
     # 10
     my $self = shift;
-    return $self->{unknown_10};
+    return $self->{insertions};
 }
 
-sub get_unknown_11
+sub get_deletions
 {
     # 11
     my $self = shift;
-    return $self->{unknown_11};
+    return $self->{deletions};
 }
 
-sub get_unknown_12
+sub get_shifts
 {
     # 12
     my $self = shift;
-    return $self->{unknown_12};
+    return $self->{shifts};
 }
 
-sub get_unknown_13
+sub get_stop_codons
 {
     # 13
     my $self = shift;
-    return $self->{unknown_13};
+    return $self->{stop_codons};
 }
 
-sub get_unknown_14
+sub get_pvalue
 {
     # 14
     my $self = shift;
-    return $self->{unknown_14};
+    return $self->{pvalue};
 }
 
-sub get_unknown_15
+sub get_identity
 {
     # 15
     my $self = shift;
-    return $self->{unknown_15};
+    return $self->{identity};
 }
 
-sub get_unknown_16
+sub get_polyA
 {
     # 16
     my $self = shift;
-    return $self->{unknown_16};
+    return $self->{polyA};
 }
 
-sub get_unknown_17
+sub get_obs_1
 {
     # 17
     my $self = shift;
-    return $self->{unknown_17};
+    return $self->{obs_1};
 }
 
-sub get_unknown_18
+sub get_exons
 {
     # 18
     my $self = shift;
-    return $self->{unknown_18};
+    return $self->{exons};
 }
 
-sub get_unknown_19
+sub get_introns
 {
     # 19
     my $self = shift;
-    return $self->{unknown_19};
+    return $self->{introns};
 }
 
-sub get_status
+sub get_biotype
 {
     # 20
     my $self = shift;
-    return $self->{status};
+    return $self->{biotype};
 }
 
 sub get_sequence
@@ -193,18 +193,18 @@ sub get_sequence
     return $self->{sequence};
 }
 
-sub get_unknown_22
+sub get_database_identifier
 {
     # 22
     my $self = shift;
-    return $self->{unknown_22};
+    return $self->{database_identifier};
 }
 
-sub get_new_addition
+sub get_obs_2
 {
     # 23
     my $self = shift;
-    return $self->{new_addition};
+    return $self->{obs_2};
 }
 
 1;

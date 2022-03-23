@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 use strict; use warnings;
 use Getopt::Long qw(GetOptions);
+use XML::LibXML;
 
-my $version = '1.0';
+my $version = '1.1';
 my $name = 'omim.pl';
 
 my $usage = <<"END_USAGE";
@@ -55,36 +56,30 @@ if ($omimListFile)
     print "Using list from file\n";
 }
 
-# use default list
+# else use default list
 else { print "No list provided; using default: @omimList\n" }
 
 foreach my $omimNumber (@omimList)
 {
-    my $raw = `curl -s -v -H "apikey: $apikey" 'https://api.omim.org/api/entry?mimNumber=$omimNumber&include=geneMap'`;
-    my @rawSplit = split('\n', $raw);
-    my @phenotypes = ();
-
-    foreach my $line (@rawSplit)
+    my $raw = `curl.exe -s -v -H "apikey: $apikey" https://api.omim.org/api/entry?mimNumber=$omimNumber&include=geneMap`;
+    my $xmlobj = XML::LibXML->load_xml(string => $raw);
+    my $genesymbol = $xmlobj->findnodes('/omim/entryList/entry/geneMap/approvedGeneSymbols');
+    # print $omimNumber."\t".$genesymbol->to_literal()."\n";
+    
+    if (!($xmlobj->findnodes('/omim/entryList/entry/geneMap/phenotypeMapList/phenotypeMap')))
     {
-        if ($line =~ m/\<phenotype\>(.*)\<\/phenotype\>/)
-        {
-            if (!(grep(/^\Q$1\E$/, @phenotypes)))
-            {
-                push(@phenotypes, $1);
-            }
+        print $omimNumber."\t".$genesymbol->to_literal()."\n";
+    }
+    else
+    {
+        foreach my $phenmap ($xmlobj->findnodes('/omim/entryList/entry/geneMap/phenotypeMapList/phenotypeMap')) {
+            my $phenotype = $phenmap->findnodes('./phenotype');
+            my $phenmim = $phenmap->findnodes('./phenotypeMimNumber');
+            my $pheninheritance = $phenmap->findnodes('./phenotypeInheritance');
+            my $phenkey = $phenmap->findnodes('./phenotypeMappingKey');
+            print $genesymbol->to_literal()."\t".$omimNumber."\t";
+            print $phenotype->to_literal()."\t".$phenmim->to_literal()."\t".$phenkey->to_literal()."\t".$pheninheritance->to_literal()."\n";
         }
     }
 
-    my $counter = 0;
-    print $omimNumber."\t";
-    foreach my $phenotype (@phenotypes)
-    {
-        if ($counter > 0 && $counter < scalar(@phenotypes))
-        {
-            print " | ";
-        }
-        print $phenotype;
-        $counter++;
-    }
-    print "\n";
 }
